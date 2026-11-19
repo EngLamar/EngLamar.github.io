@@ -1172,7 +1172,7 @@ const QUEST = [
       ["أزرار توجيه ودواسات بنزين وفرامل على الشاشة","On-screen steering arrows plus gas and brake pedals"],
       ["مؤقت يحسب زمن السباق لكل سيارة","A timer records each car's race time"],
       ["لوحة نتائج في النهاية توضح زمن كل سيارة والفائز","A race leaderboard at the end shows each time and the winner"]] },
-  { ico:"🌀", media:[{type:"video", src:"assets/portal-ar.mp4", lang:"ar", label:["النسخة العربية","Arabic version"]},{type:"video", src:"assets/portal-en.mp4", lang:"en", label:["النسخة الإنجليزية","English version"]}], objectives:[
+  { ico:"🚪", media:[{type:"video", src:"assets/portal-ar.mp4", lang:"ar", label:["النسخة العربية","Arabic version"]},{type:"video", src:"assets/portal-en.mp4", lang:"en", label:["النسخة الإنجليزية","English version"]}], objectives:[
       ["ثلاث عوالم: الصحراء والثلج والشاطئ","Three worlds: Desert, Snow and Beach"],
       ["واجهة ثنائية اللغة: عربي وإنجليزي","Bilingual interface: Arabic and English"],
       ["فتح كل العوالم يوصلك لغرفة الاحتفال","Unlocking every world opens the celebration room"]] },
@@ -1322,8 +1322,10 @@ const jumpTo = id => { const t = $(id); if (t) scrollTo({ top: t.getBoundingClie
   const app = $("app"), stick = $("startStick"), screen = document.querySelector(".hello .screen");
   const NAMES = { about:["نبذة عني","About me"], story:["قصتي","My story"], featured:["مشاريعي","My work"], projects:["أكاديمية طويق","Tuwaiq Academy"], achievements:["الإنجازات","Achievements"], contact:["تواصل","Contact"] };
   let started = false;
-  try { started = sessionStorage.getItem("started") === "1"; } catch(e){}
-  if (location.hash && $(location.hash.slice(1)) && location.hash !== "#top") started = true;
+  /* every load (refresh included) starts at the start screen */
+  try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch(e){}
+  try { if (location.hash) history.replaceState(null, "", location.pathname + location.search); } catch(e){}
+  scrollTo(0, 0);
   if (!started) app.classList.add("locked"); else app.classList.add("started");
 
   function chime(){
@@ -1341,7 +1343,6 @@ const jumpTo = id => { const t = $(id); if (t) scrollTo({ top: t.getBoundingClie
   }
   function unlock(){
     app.classList.remove("locked"); app.classList.add("unlocking", "started");
-    try { sessionStorage.setItem("started", "1"); } catch(e){}
     dispatchEvent(new Event("resize"));
     setTimeout(() => app.classList.remove("unlocking"), 1400);
   }
