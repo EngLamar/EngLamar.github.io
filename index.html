@@ -1663,15 +1663,12 @@ function applyLang(){
 $("langBtn").onclick = () => { LANG = LANG === "en" ? "ar" : "en"; try { localStorage.setItem("lang", LANG); } catch(e){} applyLang(); replayIntro(); };
 /* top bar hides while scrolling down and comes back when scrolling up */
 (function(){
-  const nav = document.querySelector("nav"); let last = scrollY, tick = false;
+  const nav = document.querySelector("nav"); let last = scrollY;
   addEventListener("scroll", () => {
-    if (tick) return; tick = true;
-    requestAnimationFrame(() => {
-      const y = scrollY, d = y - last;
-      if (y < 80 || d < -6) nav.classList.remove("hide");
-      else if (d > 6) nav.classList.add("hide");
-      last = y; tick = false;
-    });
+    const y = scrollY, d = y - last;
+    if (y < 80 || d < -6) nav.classList.remove("hide");
+    else if (d > 6) nav.classList.add("hide");
+    if (Math.abs(d) > 6) last = y;
   }, { passive:true });
 })();
 /* replay the start-screen intro (pop, drop, glitch) after a language switch */
